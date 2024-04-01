@@ -1,5 +1,10 @@
 FROM ubuntu:22.04
 
+# Copy SEGGER dependencies to /tmp folder
+COPY JLink_Linux_V794j_x86_64.deb /tmp
+COPY SystemView_Linux_V352a_x86_64.deb /tmp
+COPY jlink.sh /tmp
+
 # Install required packages
 RUN apt-get update && apt-get install -y \
     git \
@@ -22,6 +27,8 @@ RUN apt-get update && apt-get install -y \
     cppcheck \
     clang-format
 
+RUN bash /tmp/jlink.sh
+
 # Copy STM32CubeIDE files
 COPY st/ /opt/st
 
@@ -35,3 +42,6 @@ RUN wget -qO /usr/local/bin/ninja.gz https://github.com/ninja-build/ninja/releas
 RUN unzip /usr/local/bin/ninja.gz -d /usr/local/bin
 RUN chmod a+x /usr/local/bin/ninja
 RUN rm /usr/local/bin/ninja.gz
+RUN rm -f /tmp/JLink_Linux_V794j_x86_64.deb
+RUN rm -f /tmp/SystemView_Linux_V352a_x86_64.deb
+RUN rm -r /tmp/jlink.sh
